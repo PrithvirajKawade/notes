@@ -1,5 +1,8 @@
 const express = require('express')
+require('dotenv').config()
 const app = express()
+const Note = require('./models/note')
+const PORT = process.env.PORT
 
 let notes = [
   {
@@ -57,8 +60,11 @@ app.post('/api/notes', (request, response) => {
   response.json(note)
 })
 
+
 app.get('/api/notes', (req, res) => {
-  res.json(notes)
+  Note.find({}).then(notes => {
+    res.json(notes)
+  })
 })
 
 app.delete('/api/notes/:id', (request, response) => {
@@ -79,7 +85,9 @@ app.get('/api/notes/:id', (request, response) => {
   }
 })
 
-const PORT = process.env.PORT || 3001
+const Note = mongoose.model('Note', noteSchema)
+
+// const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
